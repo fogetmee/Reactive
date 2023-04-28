@@ -1,20 +1,18 @@
-import React from 'react'
+import React from "react";
 
-export default class Header extends React.Component{
-    constructor(props){
-        super(props)
+export default class Header extends React.Component {
+    constructor(props) {
+        super(props);
         this.showComponent = props.showComponent;
     }
 
-    render()
-{
-    return(<div className='header'>
-        <button onClick={()=>this.showComponent(
-            'Calculator')}>Calculator</button>
-        <button onClick={()=>this.showComponent(
-            'Graph2D')}>Graph2D</button>
-        <button onClick={()=>this.showComponent(
-            'Graph3D')}>Graph3D</button>
-    </div>)
-}
+    render() {
+        return (
+            <div>
+                <button onClick={() => this.showComponent('Calculator')}>Калькулятор</button>
+                <button onClick={() => this.showComponent('Graph2D')}>Графика 2D</button>
+                <button onClick={() => this.showComponent('Graph3D')}>Графика 3D</button>
+            </div>
+        );
+    }
 }
