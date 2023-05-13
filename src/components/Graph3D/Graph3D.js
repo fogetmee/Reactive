@@ -1,14 +1,13 @@
 import React from 'react';
 
 import Graph from '../../modules/Graph/Graph';
-import Math3D, { Point, Light, Cube } from '../../modules/Math3D';
+import Math3D, { Point, Light, Cone } from '../../modules/Math3D';
 
 import Graph3DUI from './Graph3DUI/Graph3DUI';
 
 export default class Graph3D extends React.Component {
     constructor(props) {
         super(props);
-
         this.WIN = {
             LEFT: -10,
             BOTTOM: -10,
@@ -17,17 +16,22 @@ export default class Graph3D extends React.Component {
             FOCUS: new Point(0, 0, 30),
             CAMERA: new Point(0, 0, 50)
         };
+        //console.log('const')
         this.math3D = new Math3D({ WIN: this.WIN });
-        this.scene = [new Cube()];
+        this.scene = [new Cone()];
         this.LIGHT = new Light(-25, 10, 10);
 
-        this.showPoints = false;
-        this.showEdges = false;
-        this.showPolygons = true;
+        this.show = {
+            showPoints: false,
+            showEdges: false,
+            showPolygons: true,
+        }
         this.canRotate = false;
+
     }
 
     componentDidMount() {
+
         this.graph = new Graph({
             id: 'canvas3D',
             WIN: this.WIN,
@@ -57,8 +61,9 @@ export default class Graph3D extends React.Component {
             this.renderScene();
             this.request = window.requestAnimationFrame(animLoop);
         }
-
+        
         animLoop();
+
     }
 
     componentWillUnmount() {
@@ -108,12 +113,24 @@ export default class Graph3D extends React.Component {
             poly.color = poly.hexToRgb(color);
         });
     }
+    showHidePoints(value) {
+        this.show.showPoints = value;
+    }
+
+    showHideEdges(value) {
+        this.show.showEdges = value;
+    }
+
+    showHidePolygons(value) {
+        this.show.showPolygons = value;
+    }
 
     renderScene() {
+        // console.log( this.FPS);
 
         this.graph.clear();
 
-        if (this.showPolygons) {
+        if (this.show.showPolygons) {
             const polygons = [];
             this.scene.forEach((figure, index) => {
                 this.math3D.calcCenters(figure);
@@ -153,7 +170,7 @@ export default class Graph3D extends React.Component {
 
         this.scene.forEach(figure => {
             //edges 
-            if (this.showEdges) {
+            if (this.show.showEdges) {
                 figure.edges.forEach(({ p1, p2 }) => {
                     const point1 = figure.points[p1];
                     const point2 = figure.points[p2];
@@ -166,7 +183,7 @@ export default class Graph3D extends React.Component {
                 });
             }
             //point
-            if (this.showPoints) {
+            if (this.show.showPoints) {
                 figure.points.forEach(point => {
                     this.graph.point(
                         this.math3D.xs(point),
@@ -177,28 +194,18 @@ export default class Graph3D extends React.Component {
         });
     }
 
-    showHidePoints(value) {
-        this.showPoints = value;
-    }
-
-    showHideEdges(value) {
-        this.showEdges = value;
-    }
-    
-    showHidePolygons(value) {
-        this.showPolygons = value;
-    }
-
     render() {
         return (
             <div className='graph3D'>
                 <Graph3DUI
+                    show={this.show}
                     showHidePoints={(value) => this.showHidePoints(value)}
                     showHideEdges={(value) => this.showHideEdges(value)}
                     showHidePolygons={(value) => this.showHidePolygons(value)}
-                    
+                    updateScene={(newFigure) => this.updateScene(newFigure)}
+                    changeColor={(value) => this.changeColor(value)}
                 />
-                <center><canvas id='canvas3D'></canvas></center>
+                <canvas id='canvas3D'></canvas>
             </div>
         );
     }

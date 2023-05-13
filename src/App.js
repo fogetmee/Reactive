@@ -1,34 +1,25 @@
-import React from 'react';
+import { useState } from 'react';
 
 import Header from './components/Header/Header';
-import Calculator from './components/Calculator/Calculator';
-import Graph2D from './components/Graph2D/Graph2D';
+import CalculatorComponent from './components/Calculator/CalculatorComponent';
+import Graph2DComponent from './components/Graph2D/Graph2DComponent';
 import Graph3D from './components/Graph3D/Graph3D';
 
 import './App.css';
 
-export default class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = { showComponent: 'Graph3D' };
-    }
+export default function App() {
+    const [showComponent, setShowComponent] = useState('Graph3D');
 
-    showComponent(name) {
-        this.setState({ showComponent: name });
-    }
-
-    render() {
-        return (
-            <>
-                <Header showComponent={(name) => this.showComponent(name)} />
-                {this.state.showComponent === 'Calculator' ?
-                    <Calculator /> :
-                    this.state.showComponent === 'Graph2D' ?
-                        <Graph2D /> :
-                        this.state.showComponent === 'Graph3D' ?
-                            <Graph3D /> : <></>
-                }
-            </>
-        );
-    }
+    return (
+        <>
+            <Header showComponent={setShowComponent} />
+            {showComponent === 'calc' ?
+                <CalculatorComponent /> :
+                showComponent === 'Graph2D' ?
+                    <Graph2DComponent /> :
+                    showComponent === 'Graph3D' ?
+                        <Graph3D /> : <></>
+            }
+        </>
+    );
 }

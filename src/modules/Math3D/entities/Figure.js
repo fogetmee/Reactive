@@ -1,4 +1,3 @@
-//import Point from "./Point";
 
 export default  class Figure {
     constructor(points = [], edges = [], polygons = [], name = '') {
@@ -7,4 +6,5 @@ export default  class Figure {
         this.polygons = polygons;
         this.name = name;
     }
+    
 }

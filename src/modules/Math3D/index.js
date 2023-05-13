@@ -11,6 +11,7 @@ export {
     hyperbolicParaboloid,
     oneSheetedHyperboloid,
     parabolicCylinder,
+    Ellipsoid,
     tor,
     twoSheetedHyperboloid
 } from './figures';

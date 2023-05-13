@@ -10,6 +10,7 @@ import oneSheetedHyperboloid from './oneSheetedHyperboloid';
 import parabolicCylinder from './parabolicCylinder';
 import tor from './tor';
 import twoSheetedHyperboloid from './twoSheetedHyperboloid';
+import Ellipsoid from './Ellipsoid';
 
 export {
     Cone,
@@ -23,5 +24,7 @@ export {
     oneSheetedHyperboloid,
     parabolicCylinder,
     tor,
-    twoSheetedHyperboloid
+    twoSheetedHyperboloid,
+    Ellipsoid
+
 }

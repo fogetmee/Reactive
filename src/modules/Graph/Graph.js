@@ -77,5 +77,6 @@
         }
         this.context.fill();
         this.context.closePath();
+        //this.context.stroke();
     }
 }
