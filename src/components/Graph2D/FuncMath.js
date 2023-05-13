@@ -1,183 +1,133 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Graph from '../../modules/Graph/Graph';
-import FuncMath from './FuncMath';
-import UIComponent from './UI/UIComponent';
-import './styleCanvas.css';
-
-const Graph2DComponent = () => {
-const WIN = {
-LEFT: -10,
-BOTTOM: -10,
-WIDTH: 20,
-HEIGHT: 20,
-};
-const [derevativeX, setDerevativeX] = useState(0);
-const [funcs, setFuncs] = useState([]);
-const [canMove, setCanMove] = useState(false);
-const [canvas, setCanvas] = useState(null);
-const canvasRef = useRef(null);
-
-useEffect(() => {
-const callbacks = {
-wheel: (event) => wheel(event),
-mouseMove: (event) => mouseMove(event),
-mouseUp: () => mouseUp(),
-mouseDown: () => mouseDown(),
-mouseLeave: () => mouseLeave(),
-};
-const graph = new Graph({
-WIN,
-id: 'canvas',
-width: 600,
-height: 600,
-callbacks,
-});
-setCanvas(graph);
-
-Копировать
-const uiCallbacks = {
-  delFunction: (num) => delFunction(num),
-  addFunction: (f, num, width, color, sLine, eLine, printDerevative) =>
-    addFunction(f, num, width, color, sLine, eLine, printDerevative),
-};
-const ui = new UIComponent({
-  id: 'ui',
-  parent: 'canvas',
-  callbacks: uiCallbacks,
-});
-const funcMath = new FuncMath({ WIN, canvas: graph });
-
-renderCanvas();
-return () => graph.destroy();
-}, []);
-
-const addFunction = (f, num, width, color, sLine, eLine, printDerevative) => {
-const n = num !== undefined ? num : funcs.length;
-setFuncs([
-...funcs,
-{
-f,
-n,
-width,
-color,
-sLine,
-eLine,
-printDerevative,
-},
-]);
-setDerevativeX(undefined);
-};
-
-const delFunction = (num) => {
-setFuncs(funcs.filter((f) => f.n !== num));
-setDerevativeX(undefined);
-};
-
-const wheel = (event) => {
-event.preventDefault();
-const delta = event.deltaY > 0 ? 1.1 : 1 / 1.1;
-canvas.zoomToPoint(delta, event.offsetX, event.offsetY);
-renderCanvas(event);
-};
-
-const mouseLeave = () => {
-setCanMove(false);
-renderCanvas();
-};
-
-const mouseDown = () => {
-setCanMove(true);
-};
-
-const mouseUp = () => {
-setCanMove(false);
-};
-
-const mouseMove = (event) => {
-if (canMove) {
-canvas.move(event.movementX, event.movementY);
-renderCanvas();
-}
-};
-
-const printFunction = (f, color, width) => {
-const toCanvasX = (x) => canvas.toCanvasX(x);
-const toCanvasY = (y) => canvas.toCanvasY(y);
-canvas.printFunction(f, { color, width, toCanvasX, toCanvasY });
-};
-
-const printXY = () => {
-canvas.printAxis({ color: '#aaa', width: 1 });
-canvas.printAxisX({
-color: '#000',
-width: 1,
-fontSize: 14,
-left: WIN.LEFT,
-bottom: WIN.BOTTOM,
-step: 1,
-});
-canvas.printAxisY({
-color: '#000',
-width: 1,
-fontSize: 14,
-left: WIN.LEFT,
-bottom: WIN.BOTTOM,
-step: 1,
-});
-};
-
-const printDerivative = (f, color, width) => {
-const df = (x) => funcMath.derivative(f, x);
-addFunction(df, undefined, width, color, false, false, false);
-};
-
-const renderCanvas = (event = null) => {
-canvas.clear();
-printXY();
-if (event) {
-printRect(event);
-}
-
-Копировать
-funcs.forEach((f) => {
-  if (f) {
-    printFunction(f.f, f.color, f.width);
+class FuncMath {
+    constructor({WIN, canvas}) {
+      this.WIN = WIN;
+      this.canvas = canvas;
+    }
+    
+    getDerivative(f, x0, dx = 0.00001) {return(f(x0 + dx) - f(x0)) / dx;}
+  
+    printTangent(f, x0) {
+      const k = this.getDerivative(f, x0);
+      let b = f(x0) - k * x0;
+      let x1 = this.WIN.LEFT;
+      let x2 = this.WIN.LEFT + this.WIN.WIDTH;
+      let y = k * x1 + b;
+      let y2 = k * x2 + b;
+      this.canvas.line(x1, y, x2, y2, 'black', 1, (9, 5));
+    }
+  
+    getIntegral(f, a, b, n = 100) {
+      const dx = (b - a) / n;
+      let x = a;
+      let s = 0;
+      while (x < b) {
+        s +=  ((f(x) + f(x + dx)) / 2) * dx;
+        x += dx
+      }
+      return s;
+    }
+  
+    getZero(f, a, b, eps) {
+      if (f(a) * f(b) > 0) {
+        return null;
+      }
+      if (Math.abs(f(a) - f(b)) <= eps) {
+        return (a + b) / 2;
+      }
+      var half = (a + b) / 2
+      if (f(a) * f(half) <= 0) {
+        return this.getZero(f, a, half, eps);
+      }
+      if ((f(half) * f(b)) <= 0) {
+        return this.getZero(f, half, b, eps);
+      }
+    }
+  
+    getCross(f, g, a, b, eps) {
+      if ((f(a) - g(a)) * (f(b) - g(b)) > 0) {
+        return null;
+      }
+      if (Math.abs(f(a) - g(a)) <= eps) {
+        return a
+      }
+      var half = (a + b) / 2
+      if ((f(a) - g(a)) * (f(half) - g(half)) <= 0) {
+        return this.getCross(f, g, a, half, eps);
+      }
+      if ((f(half) - g(half)) * (f(b) - g(b)) <= 0) {
+        return this.getCross(f, g, half, b, eps);
+      }
+    }
   }
-  if (f && f.printDerevative) {
-    printDerivative(f.f, f.color, f.width);
+  
+  export default FuncMath;  
+
+/*
+  Переписать, не работает
+  function FuncMath({WIN, canvas}) {
+    
+    getDerivative(f, x0, dx = 0.00001) 
+    {
+      return(f(x0 + dx) - f(x0)) / dx;
+    }
+  
+    printTangent(f, x0) 
+    {
+      const k = getDerivative(f, x0);
+      let b = f(x0) - k * x0;
+      let x1 = WIN.LEFT;
+      let x2 = WIN.LEFT + WIN.WIDTH;
+      let y = k * x1 + b;
+      let y2 = k * x2 + b;
+      canvas.line(x1, y, x2, y2, 'black', 1, (9, 5));
+    }
+  
+    getIntegral(f, a, b, n = 100) 
+    {
+      const dx = (b - a) / n;
+      let x = a;
+      let s = 0;
+      while (x < b) {
+        s +=  ((f(x) + f(x + dx)) / 2) * dx;
+        x += dx
+      }
+      return s;
+    }
+  
+    getZero(f, a, b, eps) 
+    {
+      if (f(a) * f(b) > 0) {
+        return null;
+      }
+      if (Math.abs(f(a) - f(b)) <= eps) {
+        return (a + b) / 2;
+      }
+      var half = (a + b) / 2
+      if (f(a) * f(half) <= 0) {
+        return getZero(f, a, half, eps);
+      }
+      if ((f(half) * f(b)) <= 0) {
+        return getZero(f, half, b, eps);
+      }
+    }
+  
+    getCross(f, g, a, b, eps) 
+    {
+      if ((f(a) - g(a)) * (f(b) - g(b)) > 0) {
+        return null;
+      }
+      if (Math.abs(f(a) - g(a)) <= eps) {
+        return a
+      }
+      var half = (a + b) / 2
+      if ((f(a) - g(a)) * (f(half) - g(half)) <= 0) {
+        return getCross(f, g, a, half, eps);
+      }
+      if ((f(half) - g(half)) * (f(b) - g(b)) <= 0) {
+        return getCross(f, g, half, b, eps);
+      }
+    }
   }
-});
-};
-
-const printRect = (event) => {
-const x = canvas.toGraphX(event.offsetX);
-const y = canvas.toGraphY(event.offsetY);
-const rectWidth = WIN.WIDTH / 10;
-const rectHeight = WIN.HEIGHT / 10;
-const xLeft = Math.floor((x - WIN.WIDTH / 2) / rectWidth) * rectWidth;
-const yBottom = Math.floor((y - WIN.HEIGHT / 2) / rectHeight) * rectHeight;
-const xRight = xLeft + rectWidth;
-const yTop = yBottom + rectHeight;
-canvas.printLine(xLeft, yBottom, xRight, yBottom, { color: '#f00', width: 1 });
-canvas.printLine(xRight, yBottom, xRight, yTop, { color: '#f00', width: 1 });
-canvas.printLine(xRight, yTop, xLeft, yTop, { color: '#f00', width: 1 });
-canvas.printLine(xLeft, yTop, xLeft, yBottom, { color: '#f00', width: 1 });
-};
-
-const handleClick = () => {
-ui.addFunction();
-};
-
-return (
-
-
-<canvas ref="{canvasRef}" id="canvas"></canvas>
-
-
-Add function
-
-
-
-);
-};
-export default Graph2DComponent;
+  
+  export default FuncMath;  
+  */
