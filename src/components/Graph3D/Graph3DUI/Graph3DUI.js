@@ -24,7 +24,6 @@ export default function Graph3DUI({
     showHidePolygons,
     show,
     updateScene,
-    //changeColor,
 }) {
     const [showPanel, setShowPanel] = useState(false);
 

@@ -100,3 +100,8 @@ button:hover
   grid-auto-rows: 80px;
   gap: 20px;
 }
+
+.text
+{
+  color: #fff;
+}
