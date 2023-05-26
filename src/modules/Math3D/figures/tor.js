@@ -1,5 +1,5 @@
 import { Point, Polygon, Edge, Figure } from "../entities";
-class tor extends Figure {
+class Tor extends Figure {
     constructor(R = 18, r = 6, count = 20) {
         super();
 
@@ -68,4 +68,4 @@ class tor extends Figure {
     this.polygons = polygons;
 }
 }
-export default tor;
+export default Tor;

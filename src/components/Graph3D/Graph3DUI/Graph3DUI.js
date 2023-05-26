@@ -1,5 +1,4 @@
-import { useState, useCallback } from "react";
-
+import { useState, useCallback } from 'react';
 import {
     Cone, 
     Cube,
@@ -16,17 +15,16 @@ import {
     twoSheetedHyperboloid
 } from '../../../modules/Math3D';
 
-import MyCheckbox from "../../components/MyCheckbox/MyCheckbox";
+import MyCheckBox from "../../Components/MyCheckbox";
 
-export default function Graph3DUI({
-    showHidePoints,
-    showHideEdges,
-    showHidePolygons,
-    show,
-    updateScene,
-}) {
+const Graph3DUI = ({ 
+    show, 
+    updateVarPoints, 
+    updateVarPolygons, 
+    updateVarEdges, 
+    updateScene 
+}) => {
     const [showPanel, setShowPanel] = useState(false);
-
     const figures = {  //Занос новых фигур 
         Cube: new Cube(),
         Sphere: new Sphere(),
@@ -42,55 +40,50 @@ export default function Graph3DUI({
         tor: new tor(),
         twoSheetedHyperboloid: new twoSheetedHyperboloid()
     };
-
-    const showHidePanel = useCallback(
-        () => setShowPanel(!showPanel),
-        [showPanel, setShowPanel]
+    const showHidePanel = useCallback(() => {
+        setShowPanel(!showPanel)
+    },
+        [setShowPanel, showPanel]
     );
-
     const selectFigure = useCallback((event) => {
         updateScene(figures[event.target.value])
-    }, [figures, updateScene])
-
+    },
+        [updateScene, figures]);
     return (
         <div>
-            <button onClick={showHidePanel}>{showPanel ? '<-' : '->'}</button>
-            {showPanel && (
-                <>
-                    <MyCheckbox
-                        text={'Точки'}
-                        checked={show.showPoints}
-                        onClick={(checked) => showHidePoints(checked)}
+            <button onClick={showHidePanel}>
+                {showPanel ? '<-' : '->'}
+            </button>
+            {showPanel && (<div>
+                    <MyCheckBox
+                        text='Точки'
+                        checked={show.pointCheck}
+                        onClick={updateVarPoints}
                     />
-                    <MyCheckbox
-                        text={'Грани'}
-                        checked={show.showEdges}
-                        onClick={(checked) => showHideEdges(checked)}
+                    <MyCheckBox
+                        text='Ребра'
+                        checked={show.edgCheck}
+                        onClick={updateVarEdges}
                     />
-                    <MyCheckbox
-                        text={'Полигоны'}
-                        checked={show.showPolygons}
-                        onClick={(checked) => showHidePolygons(checked)}
+                    <MyCheckBox
+                        text='Полигоны'
+                        checked={show.plgnCheck}
+                        onClick={updateVarPolygons}
                     />
-                    <div>
-                        <select onChange={selectFigure}>
-                            {Object.keys(figures).map((key, index) => (
-                                <option 
-                                    key={index}
-                                    className="figur" 
-                                    value={key}
-                                >{key}</option>
-                            ))}
-                        </select>
-                        <input type="color" id="color" placeholder="color" className="color"></input>
-                        <div id='Sphere' className='paramsFigures hidden'>
-                            <input type='text' id='radiusSphere' placeholder='Radius: 10'></input>
-                            <input type='text' id='countSphere' placeholder='Count: 50'></input>
-                            <button id='buttonSphere'>Отрисовать</button>
-                        </div>
-                    </div>
-                </>
-            )}
+                </div>)
+            }
+            <div>
+                <select onChange={selectFigure}>
+                    {Object.keys(figures).map((key, index) => (
+                        <option
+                            key={index}
+                            className="figur"
+                            value={key}>{key}</option>
+
+                    ))}
+                </select>
+            </div>
         </div>
-    );
+    )
 }
+export default Graph3DUI;

@@ -4,7 +4,7 @@ import Graph from '../../modules/Graph/Graph';
 
 import Graph2DUI from './Graph2DUI/Graph2DUI';
 
-function Graph2D() {
+const Graph2D = () => {
   const WIN = {
     left: -10,
     bottom: -10,

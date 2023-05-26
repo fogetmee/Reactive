@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import MyCheckbox from "../../components/MyCheckbox/MyCheckbox";
 
-export default function Graph2DUI()
+const Graph2DUI = () =>
 {
         this.showHidePoints = props.showHidePoints;
         this.state = { showPanel: false };
@@ -28,3 +28,4 @@ return (
 )}
     </div>
 );}
+export default Graph2DUI;

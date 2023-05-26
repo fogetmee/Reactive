@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import Header from './components/Header/Header';
-import CalculatorComponent from './components/Calculator/CalculatorComponent';
+import CalculatorComponent from './components/Calculator/Calculator';
 import Graph2DComponent from './components/Graph2D/Graph2DComponent';
 import Graph3D from './components/Graph3D/Graph3D';
 
@@ -15,7 +15,7 @@ export default function App() {
             <Header showComponent={setShowComponent} />
             {showComponent === 'calc' ?
                 <CalculatorComponent /> :
-                showComponent === 'Graph2D' ?
+                showComponent === '' ?
                     <Graph2DComponent /> :
                     showComponent === 'Graph3D' ?
                         <Graph3D /> : <></>

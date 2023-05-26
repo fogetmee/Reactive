@@ -1,13 +1,9 @@
 import React from 'react';
 
-class UIComponent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.num = 0;
-    this.callbacks = props.callbacks;
-  }
+const UIComponent = ({}) => 
+{
 
-  addFunction() {
+  const addFunction = () => {
     const button = document.createElement('button');
     button.setAttribute('id', 'delete');
     button.innerHTML = 'Delete';
@@ -89,7 +85,7 @@ class UIComponent extends React.Component {
     this.num++;
   }
 
-  keyup(elem) {
+  const keyup = (elem) => {
     try {
       let f;
       eval(`f = function (x) {return ${elem.value};}`);
@@ -115,7 +111,7 @@ class UIComponent extends React.Component {
     } catch (e) {}
   }
 
-  getValue(elem) {
+  const getValue = (elem) => {
     try {
       let f;
       let graph = document.getElementById(`inp${elem.dataset.num}`);
@@ -142,16 +138,15 @@ class UIComponent extends React.Component {
     } catch (e) {}
   }
 
-  render() {
-    return (
-      <div>
-        <button id="addFunction" onClick={() => this.addFunction()}>
-          Add function
-        </button>
-        <div id="funcsInputs"></div>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <button id="addFunction" onClick={() => this.addFunction()}>
+        Add function
+      </button>
+      <div id="funcsInputs"></div>
+    </div>
+  );
+  
 }
 
 export default UIComponent;

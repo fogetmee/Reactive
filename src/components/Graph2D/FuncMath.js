@@ -1,12 +1,11 @@
-class FuncMath {
-    constructor({WIN, canvas}) {
-      this.WIN = WIN;
-      this.canvas = canvas;
-    }
+const FuncMath = () => {
     
-    getDerivative(f, x0, dx = 0.00001) {return(f(x0 + dx) - f(x0)) / dx;}
+    const getDerivative = (f, x0, dx = 0.00001) => 
+    {
+      return(f(x0 + dx) - f(x0)) / dx;
+    }
   
-    printTangent(f, x0) {
+    const printTangent = (f, x0) => {
       const k = this.getDerivative(f, x0);
       let b = f(x0) - k * x0;
       let x1 = this.WIN.LEFT;
@@ -16,7 +15,7 @@ class FuncMath {
       this.canvas.line(x1, y, x2, y2, 'black', 1, (9, 5));
     }
   
-    getIntegral(f, a, b, n = 100) {
+    const getIntegral = (f, a, b, n = 100) => {
       const dx = (b - a) / n;
       let x = a;
       let s = 0;
@@ -27,7 +26,7 @@ class FuncMath {
       return s;
     }
   
-    getZero(f, a, b, eps) {
+    const getZero = (f, a, b, eps) => {
       if (f(a) * f(b) > 0) {
         return null;
       }
@@ -43,7 +42,7 @@ class FuncMath {
       }
     }
   
-    getCross(f, g, a, b, eps) {
+    const getCross = (f, g, a, b, eps) => {
       if ((f(a) - g(a)) * (f(b) - g(b)) > 0) {
         return null;
       }

@@ -1,4 +1,4 @@
-export default function Header({ showComponent }) {
+const Header = ({ showComponent }) => {
     return (
         <div>
             <button onClick={() => showComponent('calc')}>Калькулятор</button>
@@ -7,3 +7,4 @@ export default function Header({ showComponent }) {
         </div>
     );
 }
+export default Header
